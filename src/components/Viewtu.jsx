@@ -1,12 +1,17 @@
 import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import Add from './Add'
 
 const Viewtu = () => {
+    var[update,setupdate]=useState(false)
+    var[selected,setsSelected]=useState([])
     var[students,setStudents]=useState([])
+    
         useEffect(()=>{
-            axios.get("http://localhost:3005/student")
-            .then(response=>{
+            axios.get("http://localhost:3006/student")
+            .then(response=>{ 
+            
                 setStudents(students=response.data)
                 console.log(students)
             })
@@ -15,16 +20,18 @@ const Viewtu = () => {
         },[])
         const deletevalue=(id)=>{
             console.log(id)
-            axios.delete("http://localhost:3005/student/"+id)
+            axios.delete("http://localhost:3006/student/"+id)
             .then(reponse=>{
                 alert("Successfully Deleted")
                 window.location.reload(false)
             })
            .catch(err=>console.log(err))
         }
-  return (
-    <div>
-      <TableContainer>
+        const updatevalue=(value)=>{console.log('update',value)
+        setsSelected(value)
+        setupdate(true)
+        }
+        var finaljsx=<TableContainer>
         <Table>
             <TableHead>
             <TableRow>
@@ -41,13 +48,18 @@ const Viewtu = () => {
                         <TableCell>{value.grade}</TableCell>
                         <TableCell>
                             <Button onClick={()=>deletevalue(value.id)}>Delete</Button></TableCell>
-                            <TableCell><Button>Update</Button></TableCell>
+                            <TableCell><Button onClick={()=>updatevalue(value)}>Update</Button></TableCell>
                     </TableRow>
-  })}
+    })}
             </TableBody>
         </Table>
         </TableContainer>
-    </div>
+        if(update)
+        finaljsx=<Add data={selected} method='put'/>
+  return (
+ 
+      finaljsx
+  
   )
 }
 
